@@ -17,6 +17,7 @@ We compute the gradient with respect all the weights. This requires us to comput
 $$\nabla e(w) = \frac{\partial e(w)}{\partial w_{ij}^{l}}$$
 $$\frac{\partial e(w)}{\partial w_{ij}^{l}} = \frac{\partial e(w)}{\partial \Sigma_{ij}^{l}} \times \frac{\partial \Sigma_{ij}^{l}}{\partial w_{ij}^{l}}$$
 $$= \delta^{l} \times x_i^{l-1}$$ 
+where $\delta^{l}$ is the partial derivative of the error w.r.t. the sum of the weights to node $j$ in layer $l$, e.g. the unactivated node value.
 
 ## Backward pass
 

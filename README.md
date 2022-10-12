@@ -37,6 +37,8 @@ The accuracy across each iteration
     <img src="Accuracy.png" width="400">
 </p>
 
+The values are calculated relative to both the mini-batch and training set. 
+
 ## What lies ahead?
 
 Right now, the algorithm is fit to binary classification of two predefined data sets. The goal is to further generalise the algoritm in order to achieve a universal function approximator.

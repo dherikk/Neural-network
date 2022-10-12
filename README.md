@@ -26,11 +26,16 @@ Backward pass refers to the process of adjusting your weights and biases using s
 ### Efficiency and accuracy
 
 The results of a successful label classification of the determined training set and it's results on the training set
-![Loss](Loss.png)
 
-The accuracy across each iteration can be seen below
+<p align="center">
+    <img src="Loss.png" width="400">
+</p>
 
-![Accuracy](Accuracy.png)
+The accuracy across each iteration
+
+<p align="center">
+    <img src="Accuracy.png" width="400">
+</p>
 
 ## What lies ahead?
 

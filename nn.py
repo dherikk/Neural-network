@@ -36,36 +36,49 @@ def get_mnist_threes_nines(Y0=3, Y1=9):
     y_test = (y_test == Y1).astype('int')
     return (X_train, y_train), (X_test, y_test)
 
-def finite_difference_checker(f, x, k):
+def finite_difference(f, x, k):
     """Returns \frac{\partial f}{\partial x_k}(x)"""
     e = 10**(-5)
     derivative = (f(x.copy().astype(float)[k]+e)-f(x.copy().astype(float)-e))/2*e
     return derivative
 
-def sigmoid_activation(x):
+def sigmoid(x):
+    """
+    Returns sigmoid value of x
+    """
     out = np.clip(np.where(x>=0,
         (1 / (1 + np.exp(-x))),
         ((np.exp(x))/ (1 + np.exp(x)))), 10**-15, 1 - 10**-15)
     return out, out * (1 - out)
 
 
-def logistic_loss(g, y):
+def log_loss(g, y):
+    """
+    Takes two vectors and returns the logistic loss function of the two
+    Additionally returns the loss gradient
+    """
     assert (g.ndim == y.ndim)
     loss = -(y * np.log(g) + (1 - y) * np.log(1 - g))
     dL_dg = -((y / g) + ((y - 1)/(1 - g)))/len(g)
     return loss, dL_dg
 
-def relu_activation(s):
+def relu(s):
+    """
+    Returns relu value
+    """
     out = np.where(s > 0, s, 0)
     ds = np.where(s > 0, 1, 0)
     return out, ds
 
 def layer_forward(x, W, b, activation_fn):
+    """
+    Calculates the layer forward from the current layer
+    """
     out, grad = activation_fn(np.dot(x, W) + b)
     cache = (grad, x, W, b)
     return out, cache
 
-def create_weight_matrices(layer_dims):
+def make_weight_matrices(layer_dims):
     """
     Creates a list of weight matrices defining the weights of NN
     
@@ -78,11 +91,15 @@ def create_weight_matrices(layer_dims):
     weights = [np.random.normal(0, 0.01, size=(e, layer_dims[i+1])) for i, e in enumerate(layer_dims) if i < len(layer_dims) - 1]
     return weights
 
-def create_bias_vectors(layer_dims):
+def make_bias_vectors(layer_dims):
     biases = [np.random.normal(0, 0.01, size=(1, i)) for i in layer_dims[1:]]
     return biases
 
 def forward_pass(X_batch, weight_matrices, biases, activations):
+    """
+    Forward pass algorithm, calculates the layer caches for each layer from layer pass
+    Returns caches from each layer and output
+    """
     layer_caches = []
     depth = len(weight_matrices)
     for i in range(depth):
@@ -91,7 +108,9 @@ def forward_pass(X_batch, weight_matrices, biases, activations):
     return X_batch.flatten(), layer_caches
 
 def backward_pass(dL_dg, layer_caches):
-
+    """
+    Backpropogation algoritm
+    """
     depth = len(layer_caches)
     ### 0 = grad, 1 = x, 2 = W, 3 = b ###
     dW = np.multiply(dL_dg.reshape(len(dL_dg), -1), layer_caches[depth-1][0])
@@ -124,10 +143,10 @@ bacth_size = 100
 step_size = 0.1
 epoches = 5
 layer_dims = [784, 200, 1]
-weight_matrices = create_weight_matrices(layer_dims)
-bias_vectors = create_bias_vectors(layer_dims)
+weight_matrices = make_weight_matrices(layer_dims)
+bias_vectors = make_bias_vectors(layer_dims)
 classifications = []
-activations = [relu_activation, sigmoid_activation]
+activations = [relu, sigmoid]
 training_loss_list, training_accuracy_list, test_loss_list, test_accuracy_list = [], [], [], []
 
 def change_weights(weight_matrices, bias_vectors, grad_W_matrix, grad_b_matrix):
@@ -144,12 +163,12 @@ for _ in range(epoches):
         X_batch = np.array([X_train[index] for index in indices[i*bacth_size:(i+1)*bacth_size]]).reshape(bacth_size, layer_dims[0])
         y_batch = np.array([y_train[index] for index in indices[i*bacth_size:(i+1)*bacth_size]])
         output, layer_caches = forward_pass(X_batch, weight_matrices, bias_vectors, activations)
-        loss, dL_dg = logistic_loss(output, y_batch)
+        loss, dL_dg = log_loss(output, y_batch)
         grad_Ws, grad_bs = backward_pass(dL_dg, layer_caches)
         weight_matrices, bias_vectors = change_weights(weight_matrices, bias_vectors, grad_Ws, grad_bs)
         training_accuracy = sum(np.where(np.where(output >= 0.5, 1, 0)==y_batch, 1, 0))/len(y_batch)
         test_output, test_layer_caches = forward_pass(np.array(X_test).reshape(len(X_test), layer_dims[0]), weight_matrices, bias_vectors, activations)
-        test_loss, _ = logistic_loss(test_output, y_test) 
+        test_loss, _ = log_loss(test_output, y_test) 
         test_accuracy = sum(np.where(np.where(test_output >= 0.5, 1, 0)==y_test, 1, 0))/len(y_test)
         training_loss_list.append(np.mean(loss))
         training_accuracy_list.append(training_accuracy)

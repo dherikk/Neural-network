@@ -9,10 +9,15 @@ I have used a training set to train this neural network to output a classificati
 
 ## Forward pass
 
-In order to calculate the needed values, including the gradient of a neuron with respect to the output loss (defined by a *los function*), we calculate the forward layer $$\sigma (\textbf{x} \cdot \textbf{W} + \textbf{b})$$
+In order to calculate the needed values, including the gradient of a neuron with respect to the output loss (defined by a *loss function*), we calculate the forward layer $$\sigma (\textbf{x} \cdot \textbf{W} + \textbf{b})$$
 where $\textbf{W}$ and $\textbf{b}$ are the weight matrices and bias matrices respectively. $\sigma(z)$ is the activation function for each neuron at that layer. The sigmoid function and ReLU are implemented.
 The forward layer is calculated for each layer until the last layer, keeping track of each layer values.
+We compute the gradient with respect all the weights. This requires us to compute the partial derivative of the error with respect to each weight.
+
+$$\nabla e(w) = \frac{\partial e(w)}{\partial w_{ij}^{l}}$$
+$$\frac{\partial e(w)}{\partial w_{ij}^{l}} = \frac{\partial e(w)}{\partial \Sigma_{ij}^{l}} \times \frac{\partial \Sigma_{ij}^{l}}{\partial w_{ij}^{l}}$$
+$$= \delta^{l} \times x_i^{l-1}$$ 
 
 ## Backward pass
 
-Backward pass refers to the process of adjusting your weights and biases using stochastic gradient descent. Here the computation is made from last layer to the first layer, hence it's name. This implementation uses the layer caches from each layer calculated in forward pass in order to calculate each loss in each layer. We also use mini batches of $n = 100$ by default. This is adjustable for your need. Every iteration we take a different batch of the training data and update the weight using the using the famous gradient descent $$W^{*} = W - \eta \nabla C$$ Here, the gradient C is simply calculated in backward pass. This iteration is repeated $\floor*{\frac{|n|}{|B|}}$ where $|n|$ and $|B|$ are number of samples and batch size respectively. 
+Backward pass refers to the process of adjusting your weights and biases using stochastic gradient descent. Thus our learning can be done in linear time. Here the computation is made from last layer to the first layer, hence it's name. This implementation uses the layer caches from each layer calculated in forward pass in order to calculate each loss in each layer. We also use mini batches of $n = 100$ by default. This is adjustable for your need. Every iteration we take a different batch of the training data and update the weight using the using the famous gradient descent $$W^{*} = W - \eta \nabla C$$ Here, the gradient C is simply calculated in backward pass. This iteration is repeated $\lfloor \frac{|n|}{|B|} \rfloor$ times for a set amount of epochs where $|n|$ and $|B|$ are number of samples and batch size respectively. 

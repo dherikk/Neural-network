@@ -13,3 +13,6 @@ In order to calculate the needed values, including the gradient of a neuron with
 where $\textbf{W}$ and $\textbf{b}$ are the weight matrices and bias matrices respectively. $\sigma(z)$ is the activation function for each neuron at that layer. The sigmoid function and ReLU are implemented.
 The forward layer is calculated for each layer until the last layer, keeping track of each layer values.
 
+## Backward pass
+
+Backward pass refers to the process of adjusting your weights and biases using stochastic gradient descent. Here the computation is made from last layer to the first layer, hence it's name. This implementation uses the layer caches from each layer calculated in forward pass in order to calculate each loss in each layer. We also use mini batches of $n = 100$ by default. This is adjustable for your need. Every iteration we take a different batch of the training data and update the weight using the using the famous gradient descent $$W^{*} = W - \eta \nabla C$$ Here, the gradient C is simply calculated in backward pass. This iteration is repeated $\floor*{\frac{|n|}{|B|}}$ where $|n|$ and $|B|$ are number of samples and batch size respectively. 
